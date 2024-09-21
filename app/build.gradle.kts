@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.fetchtakehome"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -65,6 +65,9 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    implementation(project(":feature-domain"))
+    implementation(project(":feature-data"))
 
 }
 // Allow references to generated code
