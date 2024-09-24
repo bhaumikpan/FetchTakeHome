@@ -57,7 +57,7 @@ dependencies {
 
     implementation(project(":feature-domain"))
     implementation(project(":network-data"))
-//    implementation(project(":analytics"))
+    implementation(project(":analytics"))
 
 
     // todo this should get from network-data module

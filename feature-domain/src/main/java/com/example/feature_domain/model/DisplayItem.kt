@@ -1,26 +1,36 @@
 package com.example.feature_domain.model
 
 sealed interface IDisplayItem {
-    val country: Country
+    val item: FetchItem
     val header: String
 
-    data class CountryItem(
-        override val country: Country = Country(),
-        override val header: String = "",
-    ) : IDisplayItem
-
-    data class Header (
-        override val country: Country = Country(),
+    data class DisplayItem (
+        override val item: FetchItem = FetchItem(),
         override val header: String = ""
-    ): IDisplayItem
+    ) :IDisplayItem
+
+    data class HeaderItem (
+        override val item: FetchItem = FetchItem(),
+        override val header: String = ""
+    ):IDisplayItem
 
     companion object  {
-        fun fromCountry (item: Country): IDisplayItem {
-             return CountryItem(country = item)
+        fun fromFetchItem (item: FetchItem): IDisplayItem {
+            return DisplayItem(item = item)
         }
 
         fun fromHeader (head: String): IDisplayItem {
-            return Header(header = head)
+            return HeaderItem(header = head)
         }
     }
 }
+
+/*
+sealed class DisplayItem {
+    val item: FetchItem
+    val header: String
+
+    data class SectionHeader(
+        val header: String) : DisplayItem()
+    data class Item(val item: FetchItem) : DisplayItem()  // Item is your existing data class
+}*/

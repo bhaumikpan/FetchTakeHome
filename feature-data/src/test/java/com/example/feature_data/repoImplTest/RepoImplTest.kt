@@ -6,7 +6,8 @@ import io.mockk.mockk
 
 import com.example.feature_data.api.FeatureApi
 import com.example.feature_data.repo.FeatureRepoImpl
-import com.example.feature_domain.model.Country
+import com.example.feature_domain.model.FetchItem
+import com.example.network.extensions.CoreResult
 
 
 import io.mockk.every
@@ -56,18 +57,19 @@ class RepoImplTest {
         val response = getDummyResponseObject()
         // given
         coEvery {
-            api.getCountryList()
+            api.getItems()
         } returns response
 
         // when
-        when (val answer = featureRepoImpl.getCountryList()) {
+        when (val answer = featureRepoImpl.getFetchList()) {
             // then
-            /*is Result.success -> {
-                val data = answer.data
-                assert(data.isNotEmpty())
-                assert(data[0].capital == "USA")
-            }*/
-
+            is CoreResult.OnSuccess -> {
+                val data = answer.getResultData
+                assert(data.size == 1)
+                assert(data[0].listId == 101)
+                assert(data[0].name == "Test")
+                assert(data[0].id == 121)
+            }
             else -> {
                 assert(false)
             }
@@ -78,17 +80,16 @@ class RepoImplTest {
     fun `test failure Feature Response`() {
         // Given
         coEvery {
-            api.getCountryList()
+            api.getItems()
         } throws throwable
 
         runTest {
             // When
-            when (featureRepoImpl.getCountryList()) {
+            when (featureRepoImpl.getFetchList()) {
                 // Then
-              /*  is CoreResult.OnError -> {
+                is CoreResult.OnError -> {
                     assert(true)
                 }
-*/
                 else -> {
                     assert(false)
                 }
@@ -97,10 +98,12 @@ class RepoImplTest {
         }
     }
 
-    private fun getDummyResponseObject(): List<Country> {
+    private fun getDummyResponseObject(): List<FetchItem> {
         return listOf(
-            Country(
-                capital = "USA"
+            FetchItem(
+                listId = 101,
+                name = "Test",
+                id = 121
             )
         )
     }

@@ -21,6 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "FetchTakeHome"
 include(":app")
+include(":feature-ui")
 include(":feature-data")
 include(":feature-domain")
 include(":network-data")

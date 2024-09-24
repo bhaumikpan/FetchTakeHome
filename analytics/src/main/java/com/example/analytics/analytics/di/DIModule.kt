@@ -1,6 +1,6 @@
 package com.example.analytics.di
 
-import com.example.analytics.impl.AnalyticsRepoImpl
+import com.example.analytics.analytics.impl.AnalyticsRepoImpl
 import com.example.analytics.repo.AnalyticsRepo
 import dagger.Binds
 import dagger.Module

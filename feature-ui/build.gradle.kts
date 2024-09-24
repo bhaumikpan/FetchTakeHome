@@ -1,6 +1,8 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    kotlin("android")
+    kotlin("kapt")
+    id("com.android.library")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -30,14 +32,32 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
+    implementation(libs.core.ktx)
+    implementation(libs.lifecycle.runtime.ktx.v284)
+
+    implementation(libs.coordinatorlayout)
+    implementation(libs.constraintlayout)
     implementation(libs.appcompat)
-    implementation(libs.material)
+    implementation(libs.recyclerview)
+
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+
+    implementation(libs.fragment.ktx.v182)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    implementation(project(":feature-domain"))
+    implementation(project(":network-data"))
+    implementation(project(":analytics"))
 }

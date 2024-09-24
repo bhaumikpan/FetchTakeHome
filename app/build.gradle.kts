@@ -66,8 +66,10 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
+    implementation(project(":feature-ui"))
     implementation(project(":feature-domain"))
     implementation(project(":feature-data"))
+    implementation(project(":network-data"))
 
 }
 // Allow references to generated code

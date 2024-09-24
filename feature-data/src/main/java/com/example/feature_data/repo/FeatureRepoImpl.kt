@@ -1,9 +1,10 @@
 package com.example.feature_data.repo
 
-import com.example.feature_domain.model.Country
 import com.example.feature_domain.repository.FeatureRepo
 import com.example.feature_data.api.FeatureApi
+import com.example.feature_domain.model.FetchItem
 import com.example.network.di.IoDispatcher
+import com.example.network.extensions.CoreResult
 //import com.example.network_data.di.IoDispatcher
 //import com.example.network_data.extensions.CoreResult
 
@@ -16,15 +17,21 @@ class FeatureRepoImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val api: FeatureApi
 ) : FeatureRepo {
-    override suspend fun getCountryList(): Result<List<Country>> {
+    override suspend fun getFetchList(): CoreResult<List<FetchItem>> {
         return withContext(dispatcher) {
             runCatching {
-                api.getCountryList()
+                api.getItems()
             }.fold(
-                onSuccess = { it ->
-                    Result.success(it.sortedBy { it.code })
+                onSuccess = { fetchItems ->
+                    // Filter items where the name is neither null nor blank, then sort by listId and name
+                    val sortedItems = fetchItems
+                        .asSequence()  // Keep as a sequence for efficiency on larger datasets
+                        .filter { !it.name.isNullOrBlank() }  // Filter out null or blank names
+                        //.sortedWith(compareBy({ it.listId }, { it.name }))  // Sort by listId first, then by name
+                        .toList()  ?: emptyList() // Convert back to list after processing
+                    CoreResult.OnSuccess(sortedItems)
                 },
-                onFailure = { Result.failure(it) }
+                onFailure = { CoreResult.OnError(it) }
             )
         }
     }

@@ -53,7 +53,7 @@ dependencies {
 
     implementation(libs.gson)
 
-//  implementation(project(":network-data"))
+    implementation(project(":network-data"))
 
     // Hilt
     implementation(libs.hilt.android)

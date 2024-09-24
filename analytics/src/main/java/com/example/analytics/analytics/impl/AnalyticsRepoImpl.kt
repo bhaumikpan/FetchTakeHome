@@ -1,8 +1,9 @@
-package com.example.analytics.impl
+package com.example.analytics.analytics.impl
 
 import com.example.analytics.model.Analytics
 import com.example.analytics.repo.AnalyticsRepo
-import com.example.di.IoDispatcher
+import com.example.network.di.IoDispatcher
+
 
 import kotlinx.coroutines.CoroutineDispatcher
 
