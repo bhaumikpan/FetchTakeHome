@@ -5,15 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
-
 import com.example.analytics.repo.AnalyticsRepo
+import com.example.feature_domain.Util
 
-import com.example.feature_domain.model.FetchItem
 import com.example.feature_domain.model.IDisplayItem
 import com.example.feature_domain.repository.FeatureRepo
-import com.example.feature_ui.util.Util
 import com.example.network.extensions.CoreResult
-
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 
