@@ -16,12 +16,14 @@ class FeatureRepoImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val api: FeatureApi
 ) : FeatureRepo {
+    val cacheItem: MutableList<FetchItem> = mutableListOf()
     override suspend fun getFetchList(): CoreResult<List<FetchItem>> {
         return withContext(dispatcher) {
             runCatching {
                 api.getItems()
             }.fold(
                 onSuccess = { fetchItems ->
+                    cacheItem.addAll(fetchItems)
                     // Filter items where the name is neither null nor blank, then sort by listId and name
                     val sortedItems = fetchItems
                         .asSequence()  // Keep as a sequence for efficiency on larger datasets
@@ -31,11 +33,24 @@ class FeatureRepoImpl @Inject constructor(
                                 { it.listId },
                                 { it.id })
                         )  // Sort by listId first, then by name (using id which is same as name in Int)
-                        .toList() ?: emptyList() // Convert back to list after processing
+                        .toList()  // Convert back to list after processing
                     CoreResult.OnSuccess(sortedItems)
                 },
                 onFailure = { CoreResult.OnError(it) }
             )
         }
     }
+
+    override suspend fun getFilteredList(): CoreResult<List<FetchItem>> {
+        val sortedItems = cacheItem
+            .asSequence()  // Keep as a sequence for efficiency on larger datasets
+            .sortedWith(
+                compareBy(
+                    { it.listId },
+                    { it.id })
+            )  // Sort by listId first, then by name (using id which is same as name in Int)
+            .toList()  // Convert back to list after processing
+       return CoreResult.OnSuccess(sortedItems)
+    }
+
 }

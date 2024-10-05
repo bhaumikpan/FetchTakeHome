@@ -36,6 +36,7 @@ class ListFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -54,6 +55,21 @@ class ListFragment : Fragment() {
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             errorMessage?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.btn.setOnClickListener {
+            when (viewModel.filtered) {
+                true -> {
+                    viewModel.showFilteredItems()
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                    viewModel.filtered = false
+                }
+                false -> {
+                    viewModel.loadItems()
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                    viewModel.filtered = true
+                }
             }
         }
     }

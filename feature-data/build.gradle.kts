@@ -69,7 +69,6 @@ dependencies {
     implementation(networkDependencies["okHttp3Logging"]!!)
 
 
-
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)

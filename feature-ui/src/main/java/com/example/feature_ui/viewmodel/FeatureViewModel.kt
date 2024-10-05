@@ -35,7 +35,7 @@ class FeatureViewModel @Inject constructor(
         loadItems()
     }
 
-    private fun loadItems() {
+    fun loadItems() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 when (val response = repo.getFetchList()) {
@@ -45,6 +45,39 @@ class FeatureViewModel @Inject constructor(
                         _items.postValue(displayData)
                         analyticsRepo.submit(
                             ("GOT DATA TO DISPLAY SIZE:" + { response.getResultData.size })
+                        )
+                    }
+
+                    is CoreResult.OnError -> {
+                        val error =
+                            response.error ?: Throwable("EMPTY ERROR IN RESPONSE: UNKNOWN ERROR")
+                        _error.postValue(error.message)
+                        analyticsRepo.submit("GOT ERROR:" + error.message)
+                    }
+
+                    else -> {
+                        _error.postValue("UNKNOWN ERROR")
+                        analyticsRepo.submit("GOT ERROR: UNKNOWN")
+                    }
+                }
+            } catch (e: Exception) {
+                _error.postValue(e.message)
+            }
+        }
+    }
+
+    var filtered = false
+
+    fun showFilteredItems() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                when (val response = repo.getFilteredList()) {
+                    is CoreResult.OnSuccess -> {
+                        val responseData = response.getResultData
+                        val displayData = Util.generateDisplayListWithHeaders(responseData)
+                        _items.postValue(displayData)
+                        analyticsRepo.submit(
+                            ("GOT DATA TO DISPLAY SIZE:" + { response.getResultData.size.toString() })
                         )
                     }
 
